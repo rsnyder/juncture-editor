@@ -6,7 +6,7 @@
     <title>Editor</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" rel="stylesheet"/>
-    <link href="https://rsnyder.github.io/juncture/index.css" rel="stylesheet">
+    <link href="https://www.mdpress.io/index.css" rel="stylesheet">
     <style>
       body { font-family: Roboto, sans-serif; }
       .EasyMDEContainer .CodeMirror-wrap { height: calc(100dvh - 80px); }
@@ -24,8 +24,8 @@
     <textarea id="md-text"></textarea>
     
     <script type="module">
-      import 'https://rsnyder.github.io/juncture/wc/dist/js/index.js'
-      import { getMarkdown } from 'https://rsnyder.github.io/juncture/index.js'
+      import 'https://www.mdpress.io/wc/dist/js/index.js'
+      import { getMarkdown } from 'https://www.mdpress.io/index.js'
 
       let element = document.getElementById('md-text')
       const easymde = new EasyMDE({
