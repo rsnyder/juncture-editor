@@ -15,6 +15,7 @@
       @media (min-width: 800px) { .j1 .viewers { height: calc(100dvh - 192px); } }
       .CodeMirror-line .cm-header { font-size: 1.4em; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
   </head>
   <body>
     
@@ -22,10 +23,9 @@
     <mdp-content-selector v-if="contentPath !== null" id="contentSelector" compact :content-path="contentPath" mode="essays" sticky></mdp-content-selector>
     <textarea id="md-text"></textarea>
     
-    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
-    <script src="https://rsnyder.github.io/juncture/wc/dist/js/index.js" type="module"></script>
     <script type="module">
-      import { getMarkdown } from 'https://rdsnyder.github.io/juncture/juncture.js'
+      import 'https://rsnyder.github.io/juncture/wc/dist/js/index.js'
+      import { getMarkdown } from 'https://rsnyder.github.io/juncture/index.js'
 
       let element = document.getElementById('md-text')
       const easymde = new EasyMDE({
