@@ -6,8 +6,7 @@
     <title>Editor</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
-    <link href="https://rdsnyder.github.io/juncture/index.css" rel="stylesheet">
+    <link href="https://rsnyder.github.io/juncture/index.css" rel="stylesheet">
     <style>
       body { font-family: Roboto, sans-serif; }
       .EasyMDEContainer .CodeMirror-wrap { height: calc(100dvh - 80px); }
@@ -23,7 +22,8 @@
     <mdp-content-selector v-if="contentPath !== null" id="contentSelector" compact :content-path="contentPath" mode="essays" sticky></mdp-content-selector>
     <textarea id="md-text"></textarea>
     
-    <script src="https://rdsnyder.github.io/juncture/v3/dist/js/index.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <script src="https://rsnyder.github.io/juncture/wc/dist/js/index.js" type="module"></script>
     <script type="module">
       import { getMarkdown } from 'https://rdsnyder.github.io/juncture/juncture.js'
 
