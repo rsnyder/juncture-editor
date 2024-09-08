@@ -106,7 +106,7 @@
         if (codeArg) browserUrl += `&code=${codeArg}`
         if (ghSource) {
           browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}?source=${ghSource}` : `?source=${ghSource}`
-          window.history.replaceState({}, null, browserUrl)
+          // window.history.replaceState({}, null, browserUrl)
           document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
         }
       }
@@ -149,7 +149,7 @@
           localStorage.removeItem('smde_juncture_saved_hash')
           easyMDE.value('')
         }
-        window.history.replaceState({}, null, `${browserUrl}`)
+        // window.history.replaceState({}, null, `${browserUrl}`)
 
       }
 
@@ -270,7 +270,7 @@
       function togglePreview(md, preview) {
         setTimeout(() => {
           mode = preview.classList.contains('editor-preview-active') ? 'view' : 'edit'
-          window.history.replaceState({}, null, `${browserUrl}&mode=${mode}`)
+          // window.history.replaceState({}, null, `${browserUrl}&mode=${mode}`)
           setSaveButtonState()
         }, 100)
         let resp = mdToHtml(md)
