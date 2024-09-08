@@ -65,7 +65,7 @@
 
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
-      const codeArg = searchParams.get('code')
+      const codeArg = searchParams.get('code') || 'xyz'
       const referrer = document.referrer && new URL(document.referrer)
       let mode = searchParams.get('mode') || 'edit'
       let markdownIsUpdated = false
@@ -103,6 +103,7 @@
         document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
       } else {
         ghSource = localStorage.getItem('smde_ghsource') || ghUser || ''
+        if (codeArg) browserUrl += `&code=${codeArg}`
         if (ghSource) {
           browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}?source=${ghSource}` : `?source=${ghSource}`
           window.history.replaceState({}, null, browserUrl)
@@ -130,6 +131,8 @@
 
         if (ghSource) {
           browserUrl = `${browserUrl}?source=${ghSource}`
+          if (codeArg) browserUrl += `&code=${codeArg}`
+
 
           let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
           getGhFile(acct, repo, branch, path.join('/')).then(resp => {
