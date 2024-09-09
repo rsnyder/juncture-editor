@@ -65,7 +65,6 @@
 
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
-      const codeArg = searchParams.get('code')
       const referrer = document.referrer && new URL(document.referrer)
       let mode = searchParams.get('mode') || 'edit'
       let markdownIsUpdated = false
@@ -98,12 +97,10 @@
         let [acct, repo, branch, ...path] = sourceArg.split('/').filter(pe => pe)
         ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
         browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}?source=${ghSource}` : `?source=${ghSource}`
-        if (codeArg) browserUrl += `&code=${codeArg}`
         // if (ghSource !== localStorage.getItem('smde_ghsource')) localStorage.setItem('smde_juncture_content', '')
         document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
       } else {
         ghSource = localStorage.getItem('smde_ghsource') || ghUser || ''
-        if (codeArg) browserUrl += `&code=${codeArg}`
         if (ghSource) {
           browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}?source=${ghSource}` : `?source=${ghSource}`
           // window.history.replaceState({}, null, browserUrl)
@@ -117,7 +114,12 @@
       const cancelButton = dialog.querySelector('.cancel')
       cancelButton.addEventListener('click', () => cancelFileLoad())
       const proceedButton = dialog.querySelector('.proceed')
-      proceedButton.addEventListener('click', () => loadMarkdown())
+      proceedButton.addEventListener('click', () => {
+        loadMarkdown()
+        browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
+        if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
+        window.history.replaceState({}, null, `${browserUrl}`)
+      })
 
       function cancelFileLoad() {
         dialog.hide()
@@ -125,13 +127,13 @@
       }
 
       function loadMarkdown() {
+        console.log('loadMarkdown')
         dialog.hide()
 
         browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
 
         if (ghSource) {
           browserUrl = `${browserUrl}?source=${ghSource}`
-          if (codeArg) browserUrl += `&code=${codeArg}`
 
 
           let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
@@ -182,12 +184,18 @@
           // document.getElementById('gh-selector').setAttribute('gh-source', '')
           ghSource = evt.path
 
+
           if (ghSource === localStorage.getItem('smde_ghsource')) {
             let markdown = localStorage.getItem('smde_juncture_content')
             easyMDE.value(markdown)
           } else {
             if (localStorage.getItem('smde_juncture_content') && markdownIsUpdated && evt.trigger !== 'delete') dialog.show() // confirm loss of unsaved changes
-            else loadMarkdown()
+            else {
+              loadMarkdown()
+              browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
+              if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
+              window.history.replaceState({}, null, `${browserUrl}`)    
+            }
           }
         })
 
