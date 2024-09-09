@@ -124,7 +124,8 @@
           console.log('setBrowserUrl', ghSource, localStorage.getItem('smde_ghsource'))
           let browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
           if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
-          window.history.replaceState({}, null, `${browserUrl}`)
+          // window.history.replaceState({}, null, `${browserUrl}`)
+          console.log('browserUrl:', browserUrl)
         }
       }
 
@@ -144,9 +145,9 @@
             }
           })
         } else {
-          // localStorage.removeItem('smde_ghsource')
-          // localStorage.removeItem('smde_juncture_content')
-          // localStorage.removeItem('smde_juncture_saved_hash')
+          localStorage.removeItem('smde_ghsource')
+          localStorage.removeItem('smde_juncture_content')
+          localStorage.removeItem('smde_juncture_saved_hash')
           easyMDE.value('')
           setBrowserUrl()
         }
