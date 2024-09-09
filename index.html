@@ -184,7 +184,7 @@
 
           if (ghSource === localStorage.getItem('smde_ghsource')) {
             let markdown = localStorage.getItem('smde_juncture_content')
-            easyMDE.value(markdown)
+            if (markdown) easyMDE.value(markdown)
           } else {
             if (localStorage.getItem('smde_juncture_content') && markdownIsUpdated && evt.trigger !== 'delete') dialog.show() // confirm loss of unsaved changes
             else {
