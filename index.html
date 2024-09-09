@@ -91,19 +91,15 @@
       let ghUser = localStorage.getItem('gh-username')
       // console.log('ghUser:', ghUser)
 
-      let ghSource, browserUrl
+      let ghSource
 
       if (sourceArg) {
         let [acct, repo, branch, ...path] = sourceArg.split('/').filter(pe => pe)
         ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
-        browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}?source=${ghSource}` : `?source=${ghSource}`
-        // if (ghSource !== localStorage.getItem('smde_ghsource')) localStorage.setItem('smde_juncture_content', '')
         document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
       } else {
         ghSource = localStorage.getItem('smde_ghsource') || ghUser || ''
         if (ghSource) {
-          browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}?source=${ghSource}` : `?source=${ghSource}`
-          // window.history.replaceState({}, null, browserUrl)
           document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
         }
       }
@@ -116,9 +112,6 @@
       const proceedButton = dialog.querySelector('.proceed')
       proceedButton.addEventListener('click', () => {
         loadMarkdown()
-        browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
-        if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
-        window.history.replaceState({}, null, `${browserUrl}`)
       })
 
       function cancelFileLoad() {
@@ -126,19 +119,24 @@
         document.getElementById('gh-selector').setAttribute('gh-source', localStorage.getItem('smde_ghsource'))
       }
 
+      function setBrowserUrl() {
+        if (ghSource !== localStorage.getItem('smde_ghsource')) {
+          console.log('setBrowserUrl', ghSource, localStorage.getItem('smde_ghsource'))
+          let browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
+          if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
+          window.history.replaceState({}, null, `${browserUrl}`)
+        }
+      }
+
       function loadMarkdown() {
         console.log('loadMarkdown')
         dialog.hide()
 
-        browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
-
         if (ghSource) {
-          browserUrl = `${browserUrl}?source=${ghSource}`
-
-
           let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
           getGhFile(acct, repo, branch, path.join('/')).then(resp => {
             if (resp.status === 200) {
+              setBrowserUrl()
               localStorage.setItem('smde_ghsource', ghSource)
               localStorage.setItem('smde_juncture_saved_hash', resp.content.trim().hashCode())
               easyMDE.value(resp.content)
@@ -150,9 +148,8 @@
           localStorage.removeItem('smde_juncture_content')
           localStorage.removeItem('smde_juncture_saved_hash')
           easyMDE.value('')
+          setBrowserUrl()
         }
-        // window.history.replaceState({}, null, `${browserUrl}`)
-
       }
 
       async function getDefaultBranch(acct, repo) {
@@ -192,9 +189,6 @@
             if (localStorage.getItem('smde_juncture_content') && markdownIsUpdated && evt.trigger !== 'delete') dialog.show() // confirm loss of unsaved changes
             else {
               loadMarkdown()
-              browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
-              if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
-              window.history.replaceState({}, null, `${browserUrl}`)    
             }
           }
         })
@@ -278,7 +272,6 @@
       function togglePreview(md, preview) {
         setTimeout(() => {
           mode = preview.classList.contains('editor-preview-active') ? 'view' : 'edit'
-          // window.history.replaceState({}, null, `${browserUrl}&mode=${mode}`)
           setSaveButtonState()
         }, 100)
         let resp = mdToHtml(md)
