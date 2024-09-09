@@ -121,19 +121,16 @@
 
       function setBrowserUrl() {
         if (ghSource !== localStorage.getItem('smde_ghsource')) {
-          console.log('setBrowserUrl', ghSource, localStorage.getItem('smde_ghsource'))
           let browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
           if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
-          // window.history.replaceState({}, null, `${browserUrl}`)
           setTimeout(() => {
-            console.log('browserUrl:', browserUrl)
+            // console.log('setBrowserUrl', browserUrl)
             window.history.replaceState({}, null, `${browserUrl}`)
           }, 100)
         }
       }
 
       function loadMarkdown() {
-        console.log('loadMarkdown')
         dialog.hide()
 
         if (ghSource) {
@@ -180,7 +177,7 @@
         
         ghSelector.addEventListener('file-selected', e => {
           let evt = e.detail[0]
-          console.log('file-selected:', evt)
+          // console.log('file-selected:', evt)
 
           // document.getElementById('gh-selector').setAttribute('gh-source', '')
           ghSource = evt.path
