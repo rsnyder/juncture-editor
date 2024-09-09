@@ -125,7 +125,10 @@
           let browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
           if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
           // window.history.replaceState({}, null, `${browserUrl}`)
-          console.log('browserUrl:', browserUrl)
+          setTimeout(() => {
+            console.log('browserUrl:', browserUrl)
+            window.history.replaceState({}, null, `${browserUrl}`)
+          }, 2000)
         }
       }
 
