@@ -65,7 +65,7 @@
 
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
-      const codeArg = searchParams.get('code') || 'xyz'
+      const codeArg = searchParams.get('code')
       const referrer = document.referrer && new URL(document.referrer)
       let mode = searchParams.get('mode') || 'edit'
       let markdownIsUpdated = false
@@ -106,7 +106,7 @@
         if (codeArg) browserUrl += `&code=${codeArg}`
         if (ghSource) {
           browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}?source=${ghSource}` : `?source=${ghSource}`
-          // window.history.replaceState({}, null, browserUrl)
+          window.history.replaceState({}, null, browserUrl)
           document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
         }
       }
@@ -149,7 +149,7 @@
           localStorage.removeItem('smde_juncture_saved_hash')
           easyMDE.value('')
         }
-        // window.history.replaceState({}, null, `${browserUrl}`)
+        window.history.replaceState({}, null, `${browserUrl}`)
 
       }
 
@@ -177,7 +177,7 @@
         
         ghSelector.addEventListener('file-selected', e => {
           let evt = e.detail[0]
-          // console.log('file-selected:', evt)
+          console.log('file-selected:', evt)
 
           // document.getElementById('gh-selector').setAttribute('gh-source', '')
           ghSource = evt.path
