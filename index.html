@@ -62,7 +62,7 @@
       // import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
       import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'https://v3.juncture-digital.org/ghp.js'
       // import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'http://localhost:8080/ghp.js'
-
+      
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
       const referrer = document.referrer && new URL(document.referrer)
@@ -121,7 +121,7 @@
 
       function setBrowserUrl() {
         if (ghSource !== localStorage.getItem('smde_ghsource')) {
-          let browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
+          let browserUrl = location.hostname === 'editor.juncture-digital.org' ? '' : `/${location.pathname.split('/')[1]}`
           if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
           setTimeout(() => {
             // console.log('setBrowserUrl', browserUrl)
