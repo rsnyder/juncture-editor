@@ -39,8 +39,8 @@
       height="100" 
       >
       <ul>
-        <!-- <li><a href="/">Juncture Home</a></li> -->
-        <!-- <li><a href="https://search.juncture-digital.org">Search Tool</a></li> -->
+        <li><a href="https://v3.juncture-digital.org">Juncture Home</a></li>
+        <li><a href="https://search.juncture-digital.org">Search Tool</a></li>
         <li><a href="https://docs.juncture-digital.org">Help</a></li>
       </ul>
     </ve-header>
@@ -73,23 +73,30 @@
 
       let easyMDE
 
-      // console.log('referrer:', referrer.hostname )
+      console.log('referrer:', referrer )
       if (!sourceArg && referrer?.hostname === 'github.com') {
         // redirect to editor with source query if referrer is a markdown file
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
+        console.log(`acct: ${acct}, repo: ${repo}, branch: ${branch}, path: ${path.join('/')}`)
         if (acct && repo) {
+          let baseUrl = location.origin + (location.hostname === 'editor.juncture-digital.org' ? '' : `/${location.pathname.split('/')[1]}`)
           if (branch) {
-            window.location.href = `${window.location.origin}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
+            let redirectUrl = `${baseUrl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
+            console.log(`redirecting to ${redirectUrl}`)
+            window.location.href = `${baseUrl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
           } else {
             getDefaultBranch(acct, repo).then(branch => {
-              window.location.href = `${window.location.origin}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
+              let redirectUrl = `${baseUrl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
+              console.log(`redirecting to ${redirectUrl}`)
+              window.location.href = `${baseUrl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
             })
           }
         }
       } 
 
       let ghUser = localStorage.getItem('gh-username')
-      // console.log('ghUser:', ghUser)
+      
+      console.log(`source: ${sourceArg}, ghUser: ${ghUser}`)
 
       let ghSource
 
@@ -103,6 +110,7 @@
           document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
         }
       }
+      if (ghSource) setBrowserUrl()
 
       let repoIsWritable = false
       let dialog = document.querySelector('.unsaved-changes-dialog')
@@ -283,14 +291,14 @@
         let rawHTML = markdownToHtml(md)
         
         // let el = structureContent(rawHTML);
-        let el =articleFromHtml(rawHTML);
+        let el = articleFromHtml(rawHTML);
 
         (Array.from(el?.querySelectorAll('article > main > p') || []).forEach(p => {
           p.removeAttribute('data-id')
           p.removeAttribute('id')
           p.removeAttribute('class')
         }))
-        let html = el.innerHTML
+        let html = el.innerHTML.trim()
         let classes = el.className  
         return {html, classes}
       }
@@ -432,7 +440,7 @@
       function drop(e) {
         easyMDE.codemirror.setSelection(easyMDE.codemirror.coordsChar({left:e.pageX, top:e.pageY}))
         let inputText = ''
-        if (e.dataTransfer) inputText = e.dataTransfer.getData('Text') || e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list')
+        if (e.dataTransfer) inputText = e.dataTransfer.getData('text') || e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list')
         if (inputText) insertText(inputText)
       }
 
