@@ -6,15 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Juncture Editor</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/themes/light.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2/cdn/themes/light.css" />
     <link href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
     <style>
+      .sl-scroll-lock {  /* Overrides the sl stylesheet */
+        --sl-scroll-lock-size: 0 !important;
+        overflow-y: scroll !important;
+      }
       body { font-family: Roboto, sans-serif; max-width:1200px; margin: auto; padding: 0 20px; }
       textarea { opacity: 0; }
       .EasyMDEContainer .CodeMirror-wrap { height: calc(100dvh - 234px); }
       .EasyMDEContainer .CodeMirror-code { font-size: 1.2em; }
-      .editor-preview { padding:0; }
+      .editor-preview { padding:0; background-color: inherit;}
       article.j1 { height: unset; }
       @media (min-width: 800px) { .j1 .viewers { height: calc(100dvh - 192px); } }
       .CodeMirror-line .cm-header { font-size: 1.4em; }
@@ -32,6 +36,7 @@
       .cm-ve-tag, .cm-ve-id { color: #905; }
       .cm-ve-arg-name, .cm-ve-style-name, .cm-ve-boolean, .cm-ve-class { color: #690; }
       .cm-ve-arg-value, .cm-ve-style-value { color: #07a; }
+      .editor-preview ve-article { padding: 0 .5em; }
 
     </style>
   </head>
@@ -73,7 +78,7 @@
 
     <script type="module">
       // import { articleFromHtml, getGhFile, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
-      import { articleFromHtml, getGhFile, markdownToHtml } from 'https://v3.juncture-digital.org/ghp.js'
+      import { articleFromHtml, getGhFile, markdownToHtml, pathDir, setConfig } from 'https://v3.juncture-digital.org/ghp.js'
       
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
@@ -153,6 +158,12 @@
               loadMarkdownFromGH()
             }
           }
+          let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
+          pathDir(acct, repo, branch, path).then(resp => {
+            window.jekyll = { site: { baseurl: '/' }, source: { owner: acct, repository: repo, branch, dir: resp.dir }, page: resp }
+            setConfig()
+            console.log(window.config)
+          })
         }
       })
 
@@ -386,7 +397,7 @@
         let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
         path = path.join('/').replace(/\/?README\.md$/, '').replace(/\.md$/, '')
         // let href = `https://${acct}.github.io/${repo}/${path}`
-        let href = `https://v3.juncture-digital.org?{acct}/${repo}/${path}`
+        let href = `https://v3.juncture-digital.org/${acct}/${repo}/${path}`
         window.open(href, '_blank') 
       }
 
@@ -395,6 +406,7 @@
           mode = preview.classList.contains('editor-preview-active') ? 'view' : 'edit'
           setSaveButtonState()
         }, 100)
+        window.config.content = md
         let resp = mdToHtml(md)
         let html =`<ve-article${repoIsWritable ? ' repo-is-writable' : ''} base="${ghSource?.replace(/\/\w+\.md$/, '')}" class="editor-preview ${resp.classes}">${resp.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</ve-article>`
         // return html
